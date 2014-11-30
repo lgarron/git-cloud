@@ -1,0 +1,33 @@
+#!/bin/bash
+
+set -e
+
+function print_usage_and_exit() {
+  SCRIPT_NAME=$(basename "${0}")
+  echo "[Usage] ${SCRIPT_NAME} username/repo"
+  exit 1
+}
+
+if [ $# -lt "1" ]
+then
+  echo "[Error] Need to provide an argument."
+  print_usage_and_exit
+fi
+
+GITHUB_IDENTIFIER="${1}"
+USERNAME="${GITHUB_IDENTIFIER%/*}"
+REPONAME="${GITHUB_IDENTIFIER#*/}"
+
+URL="https://github.com/${USERNAME}/${REPONAME}.git"
+GIT_FOLDER="${HOME}/git/GitHub-clones/${REPONAME}"
+DBX_FOLDER="${HOME}/Dropbox/Code/GitHub-clones/${REPONAME}"
+
+if [ -d "${DBX_FOLDER}" ]
+then
+  echo "Destination already exists."
+  exit 1
+fi
+
+git clone "${URL}" "${GIT_FOLDER}"
+git split "${GIT_FOLDER}" "${DBX_FOLDER}"
+cd "${DBX_FOLDER}"

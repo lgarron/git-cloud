@@ -1,0 +1,52 @@
+#!/bin/bash
+
+set -e
+
+function print_usage_and_exit() {
+  SCRIPT_NAME=$(basename "${0}")
+  echo "[Usage] ${SCRIPT_NAME} source-repo dest-path"
+  exit 1
+}
+
+if [ $# -lt "2" ]
+then
+  echo "[Error] Need to provide two arguments"
+  print_usage_and_exit
+fi
+
+if [ ! -d "${1}/.git" ]
+then
+  echo "[Error] Source dir does not contain a .git directory."
+  print_usage_and_exit
+fi
+
+if [ -e "${2}" ]
+then
+  echo "[Error] Destination already exists."
+  print_usage_and_exit
+fi
+
+
+shopt -s dotglob nullglob
+
+cd "${1}"
+SOURCE="$(pwd)"
+
+DESTINATION="${2}"
+
+echo "Moving files from ${SOURCE} to ${DESTINATION}"
+mkdir -p "${DESTINATION}"
+
+for FILE in *
+do
+  if [ "${FILE}" = ".git" ]
+  then
+    echo "Skipping .git"
+  else
+    mv "${FILE}" "${DESTINATION}/${FILE}"
+  fi
+done
+
+mv "${SOURCE}/.git" "${SOURCE}.git"
+echo "gitdir: ${SOURCE}.git" > "${DESTINATION}/.git"
+rmdir "${SOURCE}"

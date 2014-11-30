@@ -1,0 +1,36 @@
+#!/bin/bash
+
+set -e
+
+function print_usage_and_exit() {
+  SCRIPT_NAME=$(basename "${0}")
+  echo "[Usage] ${SCRIPT_NAME} source-repo git-folder checkout-folder"
+  echo ""
+  echo "Clones the repo into git-folder and checks out a working directory into checkout-folder."
+  exit 1
+}
+
+if [ $# -lt "3" ]
+then
+  echo "[Error] Need to provide three arguments."
+  print_usage_and_exit
+fi
+
+
+REPONAME="${GITHUB_IDENTIFIER#*/}"
+
+URL="${1}"
+GIT_FOLDER="${1}/${REPONAME}"
+CHECKOUT_FOLDER="${1}/${REPONAME}"
+
+
+echo "URL:             ${URL}"
+echo "GIT_FOLDER:      ${GIT_FOLDER}"
+echo "CHECKOUT_FOLDER: ${CHECKOUT_FOLDER}"
+
+
+# git clone "${URL}" "${GIT_FOLDER}"
+# git split "${GIT_FOLDER}" "${CHECKOUT_FOLDER}"
+
+# # Yeah, yeah, I know this work without sourcing.
+# cd "${CHECKOUT_FOLDER}"
